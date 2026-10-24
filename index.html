@@ -88,6 +88,10 @@ footer .script{font-size:2.6rem;color:#ffd58a}footer p{color:#f3c9db;max-width:4
 .gal img{cursor:zoom-in;transition:transform .4s}.gal img:hover{transform:scale(1.03) rotate(-1deg)}
 #lb{position:fixed;inset:0;background:#000d;z-index:70;display:none;align-items:center;justify-content:center;cursor:zoom-out}#lb.on{display:flex;animation:rise .4s}#lb img{max-width:92vw;max-height:88vh;border-radius:14px;border:2px solid var(--gold)}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}}
+#mus{display:none;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:48;width:54px;height:54px;border-radius:50%;border:2px solid #ffd58a;background:linear-gradient(135deg,#e0749c,#5a1a47);color:#fff;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 24px #0006;align-items:center;justify-content:center;transition:transform .3s}
+#mus.show{display:flex}#mus:active{transform:scale(.9)}#mus.on{animation:ring 2s infinite}#mus.on span{display:inline-block;animation:spin 6s linear infinite}#mus .x{display:none;position:absolute;font-size:2rem;color:#ffd58a;line-height:1}#mus:not(.on) .x{display:block}
+@keyframes ring{0%{box-shadow:0 0 0 0 #ffd58acc,0 8px 24px #0006}70%{box-shadow:0 0 0 16px #ffd58a00,0 8px 24px #0006}100%{box-shadow:0 0 0 0 #ffd58a00,0 8px 24px #0006}}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style></head><body>
 
 <div id="gate">
@@ -189,6 +193,7 @@ footer .script{font-size:2.6rem;color:#ffd58a}footer p{color:#f3c9db;max-width:4
   <p style="font-size:.78rem">With love from the Sahu &amp; Behera families</p>
 </footer>
 
+<button id="mus" type="button" aria-label="Play or pause wedding music"><span>🎵</span><b class="x">╱</b></button>
 <script>
 var g=document.getElementById('gate');
 document.getElementById('openBtn').onclick=function(){g.classList.add('open');
@@ -216,5 +221,23 @@ document.getElementById('rc').onclick=function(){var t=rsvpMsg(),h=document.getE
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.12});
 document.querySelectorAll('.ev,.card').forEach(function(e,i){e.classList.add('rv');e.style.transitionDelay=(i%4)*90+'ms'});
 document.querySelectorAll('.rv').forEach(function(e){io.observe(e)});
+
+
+
+
+
+/* MUSIC: just upload your song to the repo named exactly music.mp3 (same folder as index.html). No code change needed. */
+(function(){
+var mb=document.getElementById('mus'),au=new Audio(),on=false,ok=false;
+au.loop=true;au.volume=.7;au.preload='auto';
+au.addEventListener('loadedmetadata',function(){ok=true;mb.classList.add('show')});
+au.addEventListener('error',function(){ok=false;mb.classList.remove('show')});
+au.src='music.mp3';
+function play(){au.play().then(function(){on=true;mb.classList.add('on')},function(){on=false;mb.classList.remove('on')})}
+function pause(){au.pause();on=false;mb.classList.remove('on')}
+mb.onclick=function(){on?pause():play()};
+document.getElementById('openBtn').addEventListener('click',function(){if(ok||au.readyState>0)play();else au.addEventListener('loadedmetadata',function(){if(!on&&!document.hidden)play()},{once:true})});
+document.addEventListener('visibilitychange',function(){if(document.hidden){if(on)au.pause()}else if(on)au.play().catch(function(){})});
+})();
 </script>
 </body></html>
